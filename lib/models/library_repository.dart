@@ -8,6 +8,8 @@ class LibraryRepository {
   LibraryRepository({LibraryService? service})
       : _service = service ?? LibraryService();
 
+  Future<void> init() => _service.init();
+
   List<Book> getBooks() => _service.readBooks();
   void saveBooks(List<Book> books) => _service.writeBooks(books);
   List<Loan> getLoans() => _service.readLoans();

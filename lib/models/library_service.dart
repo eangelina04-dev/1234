@@ -1,31 +1,50 @@
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+
 import 'book.dart';
 import 'loan.dart';
 
 class LibraryService {
-  static final List<Book> _books = [
-    const Book(id: 'B-001-01', title: 'Sang Pemimpi', author: 'Andrea Hirata', replacementPrice: 90000,),
-    const Book(id: 'B-002', title: 'Laskar Pelangi', author: 'Andrea Hirata', replacementPrice: 95000),
-    const Book(id: 'B-003', title: 'Bumi Manusia', author: 'Pramoedya Ananta Toer', replacementPrice: 120000),
-    const Book(id: 'B-004', title: 'Filosofi Teras', author: 'Henry Manampiring', replacementPrice: 98000),
-  ];
+  static const String _booksAsset = 'assets/data/books.json';
 
+  static List<Book> _copies(
+      String code, String title, String author, int price, int count) {
+    return List.generate(
+      count,
+          (i) => Book(
+        id: '$code-${i + 1}',
+        title: title,
+        author: author,
+        replacementPrice: price,
+      ),
+    );
+  }
+  
+  static final List<Book> _books = [];
   static final List<Loan> _loans = [];
+  static bool _loaded = false;
+
+  Future<void> init() async {
+    if (_loaded) return;
+    final raw = await rootBundle.loadString(_booksAsset);
+    final list = jsonDecode(raw) as List<dynamic>;
+    _books
+      ..clear()
+      ..addAll(list.map((e) => Book.fromJson(e as Map<String, dynamic>)));
+    _loaded = true;
+  }
 
   List<Book> readBooks() => List.of(_books);
 
   void writeBooks(List<Book> books) {
     final copy = List.of(books);
-    _books
-      ..clear()
-      ..addAll(copy);
+    _books..clear()..addAll(copy);
   }
 
   List<Loan> readLoans() => List.of(_loans);
 
   void writeLoans(List<Loan> loans) {
     final copy = List.of(loans);
-    _loans
-      ..clear()
-      ..addAll(copy);
+    _loans..clear()..addAll(copy);
   }
 }

@@ -5,6 +5,7 @@ import '../viewmodels/display_status.dart';
 import 'status_chip.dart';
 import 'view_helpers.dart';
 
+/// Kartu satu salinan fisik buku.
 class BookCard extends StatelessWidget {
   const BookCard({
     super.key,
@@ -30,9 +31,7 @@ class BookCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(book.title, style: text.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(book.author),
+                  Text('Salinan ${book.id}', style: text.titleSmall),
                   const SizedBox(height: 4),
                   Text('Harga ganti ${formatRupiah(book.replacementPrice)}',
                       style: text.bodySmall),

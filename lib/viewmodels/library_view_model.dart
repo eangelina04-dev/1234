@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../models/book.dart';
 import '../models/library_repository.dart';
 import '../models/loan.dart';
+import 'book_group.dart';
 import 'display_status.dart';
 import 'fine_calculator.dart';
 import 'operation_result.dart';
@@ -33,6 +34,26 @@ class LibraryViewModel extends ChangeNotifier {
     final s = getOverdueStatus(l);
     return s == DisplayStatus.overdue || s == DisplayStatus.missing;
   }));
+
+  /// Katalog dikelompokkan per judul; urutan mengikuti urutan data.
+  List<BookTitleGroup> get bookGroups {
+    final byTitle = <String, List<Book>>{};
+    for (final book in _books) {
+      byTitle.putIfAbsent('${book.title}|${book.author}', () => []).add(book);
+    }
+    return byTitle.values
+        .map((copies) => BookTitleGroup(
+      title: copies.first.title,
+      author: copies.first.author,
+      copies: List.unmodifiable(copies),
+    ))
+        .toList();
+  }
+
+  /// Jumlah salinan yang benar-benar tersedia untuk dipinjam.
+  int availableCount(BookTitleGroup group) => group.copies
+      .where((b) => statusOfBook(b) == DisplayStatus.available)
+      .length;
 
   int get totalFine => _loans.fold(0, (sum, l) => sum + calculateFine(l));
 

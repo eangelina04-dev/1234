@@ -44,6 +44,8 @@ class Book {
     title: json['title'] as String,
     author: json['author'] as String,
     replacementPrice: json['replacementPrice'] as int,
-    status: BookStatus.values.byName(json['status'] as String),
+    status: json['status'] == null
+        ? BookStatus.available
+        : BookStatus.values.byName(json['status'] as String),
   );
 }

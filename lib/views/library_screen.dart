@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../viewmodels/library_view_model.dart';
 import 'book_card.dart';
+import 'book_group_section.dart';
 import 'borrowed_books_screen.dart';
 import 'fine_summary_card.dart';
 import 'view_helpers.dart';
@@ -78,11 +79,12 @@ class LibraryScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Text('Katalog buku', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
-              for (final book in viewModel.books)
-                BookCard(
-                  book: book,
-                  status: viewModel.statusOfBook(book),
-                  onBorrow: () => _borrow(context, book),
+              for (final group in viewModel.bookGroups)
+                BookGroupSection(
+                  group: group,
+                  availableCount: viewModel.availableCount(group),
+                  statusOf: viewModel.statusOfBook,
+                  onBorrow: (book) => _borrow(context, book),
                 ),
             ],
           ),
